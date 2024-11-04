@@ -165,7 +165,7 @@ app.get('/', (req, res) => {
 // Alle Middleware und Routen hier
 
 // Server starten
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server läuft auf Port ${PORT}`);
 });
