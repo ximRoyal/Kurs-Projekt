@@ -27,10 +27,12 @@ $(document).ready(function(){
             contentType: 'application/json',
             data: JSON.stringify(userData),
             success: function(response) {
+                console.log('Serverantwort:', response);
                 alert(response.message);
                 $('#registrationForm')[0].reset();
             },
             error: function(xhr) {
+                console.error('Fehler beim Senden der Daten:', xhr.responseText);
                 if(xhr.responseJSON && xhr.responseJSON.message) {
                     alert(xhr.responseJSON.message);
                 } else {
