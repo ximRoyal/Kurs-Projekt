@@ -27,6 +27,11 @@ db.run(`CREATE TABLE IF NOT EXISTS users (
   password TEXT
 )`);
 
+// **GET-Route für die Registrierungsseite hinzufügen**
+app.get('/register', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'register.html'));
+});
+
 // Registrierungs-Endpunkt
 app.post('/register', (req, res) => {
   const { username, email, password } = req.body;
