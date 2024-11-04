@@ -29,7 +29,7 @@ db.run(`CREATE TABLE IF NOT EXISTS users (
 
 // **GET-Route für die Registrierungsseite hinzufügen**
 app.get('/register', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'register.html'));
+  res.sendFile(path.join(__dirname, '', 'register.html'));
 });
 
 // Registrierungs-Endpunkt
