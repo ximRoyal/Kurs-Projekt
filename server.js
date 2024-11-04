@@ -81,6 +81,12 @@ app.get('/login', (req, res) => {
 // Callback-Route nach erfolgreicher Authentifizierung
 app.get('/callback', (req, res) => {
   const code = req.query.code || null;
+  const error = req.query.error;
+
+  if (error) {
+    // Bei Fehler zur Hauptseite umleiten und Fehlermeldung übergeben
+    return res.redirect('/?error=auth_failed');
+  }
   
   const authOptions = {
     url: 'https://accounts.spotify.com/api/token',
@@ -121,7 +127,8 @@ app.get('/callback', (req, res) => {
     })
     .catch(err => {
       console.error('Fehler bei der Spotify Authentifizierung:', err.message);
-      res.redirect('/error');
+      // Bei Fehler zur Hauptseite umleiten und Fehlermeldung übergeben
+      res.redirect('/?error=auth_failed');
     });
 });
 

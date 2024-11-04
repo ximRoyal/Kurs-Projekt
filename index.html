@@ -29,6 +29,10 @@
       </button>
     </div>
 
+    <div id="error-message" class="container text-center text-danger mt-3">
+      <!-- Fehlermeldung wird hier angezeigt -->
+    </div>
+
     <div class="container text-center text-white mt-5">
       <div class="row justify-content-center">
         <div class="col-lg">
@@ -58,6 +62,21 @@
     -->
 
   </main>
+
+  <!-- Skript zur Anzeige der Fehlermeldung -->
+  <script>
+    // Funktion, um Query-Parameter aus der URL zu extrahieren
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    const error = getQueryParam('error');
+    if (error === 'auth_failed') {
+      const errorMessageDiv = document.getElementById('error-message');
+      errorMessageDiv.textContent = 'Die Spotify-Authentifizierung ist fehlgeschlagen. Bitte versuchen Sie es erneut.';
+    }
+  </script>
 
   <!-- Entferne das Skript, falls nicht mehr benötigt -->
   <!--
