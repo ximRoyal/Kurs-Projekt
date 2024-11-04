@@ -1,0 +1,24 @@
+.btn-success {
+    background-color: #1DB954;
+    border-color: #1DB954;
+  }
+.btn-success:hover {
+    background-color: #1ed760;
+    border-color: #1ed760;
+}
+.btn {
+  border-radius: 50px;
+}
+.bg-success {
+  background-color: #1DB954;
+}
+.navbar {
+  border-radius: 50px;
+  padding: 10px 20px;
+  margin: 0 auto;
+  margin-top: 20px;
+  max-width: 1000px;
+}
+.navbar-brand img {
+  margin-right: 10px;
+}
