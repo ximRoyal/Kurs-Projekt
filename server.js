@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const cors = require('cors');
+const querystring = require('querystring');
+const axios = require('axios');
 
 // Middleware hinzufügen
 app.use(express.json());
@@ -39,9 +41,88 @@ db.run(`CREATE TABLE IF NOT EXISTS users (
   }
 });
 
-// **GET-Route für die Registrierungsseite hinzufügen**
-app.get('/register', (req, res) => {
-  res.sendFile(path.join(__dirname, '', 'register.html'));
+// Aktualisiere die Benutzertabelle, um die Spotify-ID zu speichern
+db.run(`ALTER TABLE users ADD COLUMN spotify_id TEXT UNIQUE`, (err) => {
+  if (err && !err.message.includes('duplicate column name')) {
+    console.error('Fehler beim Hinzufügen der Spotify-ID-Spalte:', err.message);
+  }
+});
+
+// Spotify API Konfiguration
+const client_id = 'YOUR_SPOTIFY_CLIENT_ID'; // Ersetze durch deine Spotify Client ID
+const client_secret = 'YOUR_SPOTIFY_CLIENT_SECRET'; // Ersetze durch deinen Spotify Client Secret
+const redirect_uri = 'http://localhost:3000/callback'; // Ersetze durch deine Redirect URI
+
+// Hilfsfunktion zum Generieren eines zufälligen Strings
+function generateRandomString(length) {
+  let result = '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const charactersLength = characters.length;
+  for ( let i = 0; i < length; i++ ) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
+// Route zum Starten des Authentifizierungsprozesses
+app.get('/login', (req, res) => {
+  const state = generateRandomString(16);
+  const scope = 'user-read-private user-read-email';
+  res.redirect('https://accounts.spotify.com/authorize?' +
+    querystring.stringify({
+      response_type: 'code',
+      client_id: client_id,
+      scope: scope,
+      redirect_uri: redirect_uri,
+      state: state
+    }));
+});
+
+// Callback-Route nach erfolgreicher Authentifizierung
+app.get('/callback', (req, res) => {
+  const code = req.query.code || null;
+  
+  const authOptions = {
+    url: 'https://accounts.spotify.com/api/token',
+    method: 'POST',
+    params: {
+      code: code,
+      redirect_uri: redirect_uri,
+      grant_type: 'authorization_code'
+    },
+    headers: {
+      'Authorization': 'Basic ' + Buffer.from(client_id + ':' + client_secret).toString('base64'),
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  };
+  
+  axios(authOptions)
+    .then(response => {
+      const access_token = response.data.access_token;
+      
+      // Benutzerdaten abrufen
+      return axios.get('https://api.spotify.com/v1/me', {
+        headers: { 'Authorization': 'Bearer ' + access_token }
+      });
+    })
+    .then(response => {
+      const user = response.data;
+      const { id: spotify_id, display_name: username, email } = user;
+      
+      // Benutzerdaten in die Datenbank speichern
+      db.run(`INSERT OR IGNORE INTO users (spotify_id, username, email) VALUES (?, ?, ?)`, [spotify_id, username, email], function(err) {
+        if (err) {
+          console.error('Fehler beim Speichern des Benutzers:', err.message);
+          return res.status(500).send('Serverfehler beim Speichern des Benutzers.');
+        }
+        console.log('Benutzer erfolgreich gespeichert:', username);
+        res.redirect('/'); // Weiterleitung zur Startseite
+      });
+    })
+    .catch(err => {
+      console.error('Fehler bei der Spotify Authentifizierung:', err.message);
+      res.redirect('/error');
+    });
 });
 
 // Registrierungs-Endpunkt
@@ -76,9 +157,9 @@ app.post('/register', (req, res) => {
   });
 });
 
-// Root-Route
+// Passe die Root-Route an, um index.html zu senden
 app.get('/', (req, res) => {
-  res.send('Willkommen auf der Startseite!');
+  res.sendFile(path.join(__dirname, '', 'index.html'));
 });
 
 // Alle Middleware und Routen hier
