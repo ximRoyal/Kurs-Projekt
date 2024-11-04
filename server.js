@@ -49,8 +49,8 @@ db.run(`ALTER TABLE users ADD COLUMN spotify_id TEXT UNIQUE`, (err) => {
 });
 
 // Spotify API Konfiguration
-const client_id = 'YOUR_SPOTIFY_CLIENT_ID'; // Ersetze durch deine Spotify Client ID
-const client_secret = 'YOUR_SPOTIFY_CLIENT_SECRET'; // Ersetze durch deinen Spotify Client Secret
+const client_id = '98621f9004dd40ddb39e47dab58dc971'; // Ersetze durch deine Spotify Client ID
+const client_secret = '1c3e31bb5fdf46a3b4939aee80a6b8cc'; // Ersetze durch deinen Spotify Client Secret
 const redirect_uri = 'http://localhost:3000/callback'; // Ersetze durch deine Redirect URI
 
 // Hilfsfunktion zum Generieren eines zufälligen Strings
