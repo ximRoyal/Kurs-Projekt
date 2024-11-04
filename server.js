@@ -1,5 +1,3 @@
-// server.js
-
 const express = require('express');
 const app = express();
 const bcrypt = require('bcrypt');
@@ -56,6 +54,11 @@ app.post('/register', (req, res) => {
       res.status(200).json({ message: 'Registrierung erfolgreich!' });
     });
   });
+});
+
+// Root-Route
+app.get('/', (req, res) => {
+  res.send('Willkommen auf der Startseite!');
 });
 
 // Server starten
