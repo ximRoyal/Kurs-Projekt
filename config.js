@@ -1,5 +1,4 @@
-# .gitignore
-config.js
+
 // config.js
 const config = {
   client_id: 'your_client_id_here',
