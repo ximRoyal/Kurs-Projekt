@@ -31,6 +31,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
 // Tabelle erstellen, falls sie nicht existiert
 db.run(`CREATE TABLE IF NOT EXISTS users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
+  spotify_id TEXT UNIQUE,
   username TEXT UNIQUE,
   email TEXT UNIQUE,
   password TEXT
@@ -42,7 +43,7 @@ db.run(`CREATE TABLE IF NOT EXISTS users (
   }
 });
 
-// Aktualisiere die Benutzertabelle, um die Spotify-ID zu speichern
+// Entfernen Sie diesen Code
 db.run(`ALTER TABLE users ADD COLUMN spotify_id TEXT UNIQUE`, (err) => {
   if (err && !err.message.includes('duplicate column name')) {
     console.error('Fehler beim Hinzufügen der Spotify-ID-Spalte:', err.message);
