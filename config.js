@@ -1,8 +1,8 @@
 
 // config.js
 const config = {
-  client_id: '98621f9004dd40ddb39e47dab58dc971',
-  client_secret: '1c3e31bb5fdf46a3b4939aee80a6b8cc',
+  client_id: '427c8f931fd249708b121885dd02a311',
+  client_secret: '321a0b015f4d44cbab5bb065cf0909f9',
   redirect_uri: 'http://localhost:5000/callback'  
 };
 
